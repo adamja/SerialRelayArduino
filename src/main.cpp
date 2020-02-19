@@ -54,7 +54,7 @@
 // HC-12
 #define HC12_TX 2
 #define HC12_RX 3
-#define HC12_SET 4
+#define HC12_SET 8
 SoftwareSerial HCSerial(HC12_TX, HC12_RX); //RX, TX
 
 // Heartbeart
@@ -94,7 +94,7 @@ void setup() {
   commandQueue.setPrinter (Serial);  // set the serial printer of the queue
 
   pinMode(HC12_SET, OUTPUT);
-  digitalWrite(HC12_SET, LOW);  // Put the HC-12 in configuration mode
+  digitalWrite(HC12_SET, HIGH);  // Put the HC-12 in run mode
   
   pinMode(relay1, OUTPUT);
   pinMode(relay2, OUTPUT);
@@ -114,8 +114,8 @@ void setup() {
 
 void loop() {
   // ==== Storing the incoming data into a String variable
-  while (Serial.available()) {  // If HC-12 has data
-    incomingByte = Serial.read();  // Store each icoming byte from HC-12
+  while (HCSerial.available()) {  // If HC-12 has data
+    incomingByte = HCSerial.read();  // Store each incoming byte from HC-12
     readBuffer += char(incomingByte);  // Add each byte to ReadBuffer string variable
   }
   delay(100);
