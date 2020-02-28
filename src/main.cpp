@@ -8,20 +8,28 @@
 +----------+---------------+---------------------------------------------------------------------+
 
  * Receive commands:
-+-------+----------+---------+
-| Relay | Function | Command |
-+-------+----------+---------+
-| All   | ON       | RA-ON   |
-| All   | OFF      | RA-OFF  |
-| 1     | ON       | R1-ON   |
-| 1     | OFF      | R1-OFF  |
-| 2     | ON       | R2-ON   |
-| 2     | OFF      | R2-OFF  |
-| 3     | ON       | R3-ON   |
-| 3     | OFF      | R3-OFF  |
-| 4     | ON       | R4-ON   |
-| 4     | OFF      | R4-OFF  |
-+-------+----------+---------+
++----------+---------+
+| Function | Command |
++----------+---------+
+| ALL ON   | RA-ON   |
+| ALL OFF  | RA-OFF  |
+| 1 ON     | R1-ON   |
+| 1 OFF    | R1-OFF  |
+| 2 ON     | R2-ON   |
+| 2 OFF    | R2-OFF  |
+| 3 ON     | R3-ON   |
+| 3 OFF    | R3-OFF  |
+| 4 ON     | R4-ON   |
+| 4 OFF    | R4-OFF  |
+| 5 ON     | R5-ON   |
+| 5 OFF    | R5-OFF  |
+| 6 ON     | R6-ON   |
+| 6 OFF    | R6-OFF  |
+| 7 ON     | R7-ON   |
+| 7 OFF    | R7-OFF  |
+| 8 ON     | R8-ON   |
+| 8 OFF    | R8-OFF  |
++----------+---------+
 
  * Reply commands:
 +------------+---------------------------------------------------------------------------------------------------------+
@@ -48,14 +56,18 @@
 #define relay2 5
 #define relay3 6
 #define relay4 7
+#define relay5 8
+#define relay6 9
+#define relay7 10
+#define relay8 11
 #define RelayOn HIGH
 #define RelayOff LOW
 
 // HC-12
 #define HC12_TX 2
 #define HC12_RX 3
-#define HC12_SET 8
-SoftwareSerial HCSerial(HC12_TX, HC12_RX); //RX, TX
+#define HC12_SET 12
+SoftwareSerial HCSerial(HC12_RX, HC12_TX); //RX, TX
 
 // Heartbeart
 unsigned long heartbeat_delay = 60000;      // Send keepalive heartbeat message at this interval (ms)
@@ -100,10 +112,18 @@ void setup() {
   pinMode(relay2, OUTPUT);
   pinMode(relay3, OUTPUT);
   pinMode(relay4, OUTPUT);
+  pinMode(relay5, OUTPUT);
+  pinMode(relay6, OUTPUT);
+  pinMode(relay7, OUTPUT);
+  pinMode(relay8, OUTPUT);
   digitalWrite(relay1, RelayOff);
   digitalWrite(relay2, RelayOff);
   digitalWrite(relay3, RelayOff);
   digitalWrite(relay4, RelayOff);
+  digitalWrite(relay5, RelayOff);
+  digitalWrite(relay6, RelayOff);
+  digitalWrite(relay7, RelayOff);
+  digitalWrite(relay8, RelayOff);
 
   wdt_enable(WDTO_8S);  // Set a watchdog timer for 8 seconds
 
@@ -169,6 +189,10 @@ void processCommands() {
       digitalWrite(relay2, RelayOn);
       digitalWrite(relay3, RelayOn);
       digitalWrite(relay4, RelayOn);
+      digitalWrite(relay5, RelayOn);
+      digitalWrite(relay6, RelayOn);
+      digitalWrite(relay7, RelayOn);
+      digitalWrite(relay8, RelayOn);
       sendCommand(command);
       lastTurnedRelayOnMillis = millis();
       
@@ -177,6 +201,10 @@ void processCommands() {
       digitalWrite(relay2, RelayOff);
       digitalWrite(relay3, RelayOff);
       digitalWrite(relay4, RelayOff);
+      digitalWrite(relay5, RelayOff);
+      digitalWrite(relay6, RelayOff);
+      digitalWrite(relay7, RelayOff);
+      digitalWrite(relay8, RelayOff);
       sendCommand(command);
       
     } else if (command == "R1-ON") {
@@ -213,6 +241,42 @@ void processCommands() {
       
     } else if (command == "R4-OFF") {
       digitalWrite(relay4, RelayOff);
+      sendCommand(command);
+
+    } else if (command == "R5-ON") {
+      digitalWrite(relay5, RelayOn);
+      sendCommand(command);
+      lastTurnedRelayOnMillis = millis();
+      
+    } else if (command == "R5-OFF") {
+      digitalWrite(relay5, RelayOff);
+      sendCommand(command);
+
+    } else if (command == "R6-ON") {
+      digitalWrite(relay6, RelayOn);
+      sendCommand(command);
+      lastTurnedRelayOnMillis = millis();
+      
+    } else if (command == "R6-OFF") {
+      digitalWrite(relay6, RelayOff);
+      sendCommand(command);
+
+    } else if (command == "R7-ON") {
+      digitalWrite(relay7, RelayOn);
+      sendCommand(command);
+      lastTurnedRelayOnMillis = millis();
+      
+    } else if (command == "R7-OFF") {
+      digitalWrite(relay7, RelayOff);
+      sendCommand(command);
+
+    } else if (command == "R8-ON") {
+      digitalWrite(relay8, RelayOn);
+      sendCommand(command);
+      lastTurnedRelayOnMillis = millis();
+      
+    } else if (command == "R8-OFF") {
+      digitalWrite(relay8, RelayOff);
       sendCommand(command);
       
     } else {
@@ -252,6 +316,18 @@ bool relayActive() {
   if (digitalRead(relay4) == RelayOn) {
     return true;
   }
+  if (digitalRead(relay5) == RelayOn) {
+    return true;
+  }
+  if (digitalRead(relay6) == RelayOn) {
+    return true;
+  }
+  if (digitalRead(relay7) == RelayOn) {
+    return true;
+  }
+  if (digitalRead(relay8) == RelayOn) {
+    return true;
+  }
   return false;
 }
 
@@ -262,6 +338,10 @@ void safetyCheck() {
     digitalWrite(relay2, RelayOff);
     digitalWrite(relay3, RelayOff);
     digitalWrite(relay4, RelayOff);
+    digitalWrite(relay5, RelayOff);
+    digitalWrite(relay6, RelayOff);
+    digitalWrite(relay7, RelayOff);
+    digitalWrite(relay8, RelayOff);
     sendCommand("SAFETY-OFF");
   }
 }
